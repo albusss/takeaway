@@ -2,16 +2,26 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "symfony/console": "5.0.*",
-        "symfony/dotenv": "5.0.*",
-        "symfony/flex": "^1.3.1",
-        "symfony/framework-bundle": "5.0.*",
-        "symfony/yaml": "5.0.*"
-    },
-    "require-dev": {
+        "ext-json": "*",
+        "friendsofsymfony/rest-bundle": "^2.5",
+        "jms/serializer-bundle": "^3.2",
+        "messagebird/php-rest-api": "^1.13",
+        "php-amqplib/php-amqplib": "^2.9",
+        "ramsey/uuid-doctrine": "^1.5",
+        "sensio/framework-extra-bundle": "^5.3",
+        "symfony/console": "4.2.*",
+        "symfony/dotenv": "4.2.*",
+        "symfony/flex": "^1.1",
+        "symfony/form": "4.2.*",
+        "symfony/framework-bundle": "4.2.*",
+        "symfony/orm-pack": "^1.0",
+        "symfony/twig-bundle": "4.2.*",
+        "symfony/validator": "4.2.*",
+        "symfony/webpack-encore-bundle": "^1.5",
+        "symfony/yaml": "4.2.*"
     },
     "config": {
         "preferred-install": {
@@ -33,7 +43,6 @@
         "paragonie/random_compat": "2.*",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-iconv": "*",
-        "symfony/polyfill-php72": "*",
         "symfony/polyfill-php71": "*",
         "symfony/polyfill-php70": "*",
         "symfony/polyfill-php56": "*"
@@ -56,7 +65,12 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.0.*"
+            "require": "4.2.*"
         }
+    },
+    "require-dev": {
+        "symfony/maker-bundle": "^1.11",
+        "symfony/phpunit-bridge": "4.2.*",
+        "symfony/test-pack": "^1.0"
     }
 }
