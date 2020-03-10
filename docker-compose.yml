@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+
+  reverseproxy:
+    image: nginx
+    ports:
+      - 80:80
+    restart: always
+    volumes:
+      - ./docker/config/nginx.conf:/etc/nginx/conf.d/default.conf
+      - message_sender_static:/var/www/html/message_sender
+
+  db_master:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/config/mysql.conf:/etc/mysql/conf.d/master.conf
+      - ./docker/data/mysql/master:/var/lib/mysql
+      - ./var/log/mysql/master:/var/log/mysql
+      - ./docker/config/mysql-init-dump.sql:/docker-entrypoint-initdb.d/mysql-init-dump.sql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: takeaway
+      MYSQL_DATABASE: takeaway
+      MYSQL_USER: takeaway
+      MYSQL_PASSWORD: takeaway
+
+  rabbit:
+    hostname: "rabbit"
+    image: "rabbitmq:3-management"
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    ports:
+      - 15672:15672
+    volumes:
+      - ./docker/data/rabbitmq:/var/lib/rabbitmq/mnesia/
+
+  message_sender:
+    depends_on:
+      - db_master
+      - reverseproxy
+    build:
+      context: .
+      dockerfile: docker/config/MessageServiceDockerfile
+    environment:
+      MESSAGEBIRD_API_TOKEN: "PUT YOUR MESSAGEBIRD API KEY HERE"
+      APP_ENV: prod
+    restart: always
+    volumes:
+      - message_sender_static:/app/public
+
+  rabbit_consumer:
+    depends_on:
+      - db_master
+      - rabbit
+    build:
+      context: .
+      dockerfile: docker/config/MessageSenderDockerfile
+    environment:
+      MESSAGEBIRD_API_TOKEN: "PUT YOUR MESSAGEBIRD API KEY HERE"
+      APP_ENV: prod
+    restart: always
+
+volumes:
+  message_sender_static:

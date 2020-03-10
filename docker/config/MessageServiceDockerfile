@@ -1,0 +1,25 @@
+FROM node:9 AS node
+
+COPY . /app
+WORKDIR /app
+RUN npm install && npm run build
+
+FROM php:7.2-fpm
+
+RUN apt-get update && apt-get install -y \
+		zlib1g-dev \
+		cron
+
+RUN docker-php-ext-install zip \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-install bcmath \
+    && docker-php-ext-install sockets \
+    && docker-php-ext-install opcache
+
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+
+COPY --from=node /app /app
+WORKDIR /app
+
+RUN composer install
+RUN composer dump-env prod

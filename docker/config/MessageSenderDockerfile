@@ -1,0 +1,23 @@
+FROM php:7.2
+
+RUN apt-get update && apt-get install -y \
+        supervisor \
+		zlib1g-dev
+
+RUN docker-php-ext-install zip \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-install bcmath \
+    && docker-php-ext-install sockets \
+    && docker-php-ext-install opcache
+
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+
+COPY docker/config/supervisor.conf /etc/supervisor/conf.d/message_send.conf
+
+COPY . /app
+WORKDIR /app
+
+RUN composer install
+RUN composer dump-env prod
+
+CMD ["/usr/bin/supervisord", "-n"]
