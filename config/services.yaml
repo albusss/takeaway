@@ -23,5 +23,23 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    sensio_framework_extra.view.listener:
+        alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+
+    MessageBird\Client:
+        arguments:
+            $accessKey: "%env(resolve:MESSAGEBIRD_API_TOKEN)%"
+
+    App\Service\RabbitServiceInitializer:
+        arguments:
+            $host: '%env(resolve:RABBIT_HOST)%'
+            $port: '%env(resolve:RABBIT_PORT)%'
+            $user: '%env(resolve:RABBIT_USER)%'
+            $password: '%env(resolve:RABBIT_PASS)%'
+
+    jms_serializer.object_constructor:
+        alias: jms_serializer.doctrine_object_constructor
+        public: false
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
